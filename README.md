@@ -1,1 +1,1 @@
-# ansible-workshop-inspirationdays24
+# ansible-workshop-inspirationday24
