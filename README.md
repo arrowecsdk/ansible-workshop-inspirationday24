@@ -49,9 +49,9 @@ mkdir public
 
 sudo npm install -g pm2
 
-curl 'https://raw.githubusercontent.com/arrowecsdk/aws-workshop-inspirationday24/refs/heads/main/noteapp/server.js' > server.js
+curl 'https://raw.githubusercontent.com/arrowecsdk/ansible-workshop-inspirationday24/refs/heads/main/noteapp/server.js' > server.js
 
-curl 'https://raw.githubusercontent.com/arrowecsdk/aws-workshop-inspirationday24/refs/heads/main/noteapp/public/index.html' > public/index.html
+curl 'https://raw.githubusercontent.com/arrowecsdk/ansible-workshop-inspirationday24/refs/heads/main/noteapp/public/index.html' > public/index.html
 
 pm2 start server.js
 
@@ -70,12 +70,12 @@ pm2 save
 Install Nginx
 
 ```bash
-sudo dnf install nginx -y
+sudo apt install nginx -y
 
 sudo systemctl start nginx
 sudo systemctl enable nginx
 
-sudo tee -a /etc/nginx/conf.d/note-app.conf <<'EOF'
+sudo tee -a //etc/nginx/sites-available/note-app.conf <<'EOF'
 server {
     listen 80;
     server_name _;  # Replace with your domain if you have one
@@ -90,6 +90,10 @@ server {
     }
 }
 EOF
+
+sudo ln -s /etc/nginx/sites-available/note-app.conf /etc/nginx/sites-enabled/
+
+sudo rm /etc/nginx/sites-enabled/default
 
 sudo nginx -t
 

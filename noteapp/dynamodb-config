@@ -1,0 +1,40 @@
+const AWS = require('aws-sdk');
+
+// Configure AWS for local DynamoDB
+const config = {
+  region: 'eu-central-1',
+  endpoint: 'http://10.0.0.4:8000',
+  // Credentials are required even for local DynamoDB
+  accessKeyId: 'dummy',
+  secretAccessKey: 'dummy'
+};
+
+AWS.config.update(config);
+
+// Create DynamoDB client
+const dynamodb = new AWS.DynamoDB.DocumentClient();
+
+// Optional: Create raw DynamoDB client (useful for table operations)
+const dynamodbRaw = new AWS.DynamoDB();
+
+// Example usage
+const tableName = 'noteapp-table';
+
+// Example function to test connection
+async function testConnection() {
+  try {
+    // List all tables to verify connection
+    const tables = await dynamodbRaw.listTables().promise();
+    console.log('Connected to local DynamoDB. Available tables:', tables.TableNames);
+    return tables;
+  } catch (error) {
+    console.error('Error connecting to local DynamoDB:', error);
+    throw error;
+  }
+}
+
+module.exports = {
+  dynamodb,
+  dynamodbRaw,
+  testConnection
+};

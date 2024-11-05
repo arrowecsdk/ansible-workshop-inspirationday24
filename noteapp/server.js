@@ -1,16 +1,27 @@
+Server.js with DynamoDB Config
+
 // server.js
 const express = require('express');
-const AWS = require('aws-sdk');
 const bodyParser = require('body-parser');
+const { dynamodb, testConnection } = require('./dynamodb-config');
 
 const app = express();
+const tableName = 'noteapp-table';
+
+// Middleware
 app.use(bodyParser.json());
 app.use(express.static('public')); // Serve static files from 'public' directory
 
-// Configure AWS
-AWS.config.update({ region: 'eu-central-1' });
-const dynamodb = new AWS.DynamoDB.DocumentClient({ endpoint: new AWS.Endpoint('http://localhost:8000') });
-const tableName = 'noteapp-table';
+// Test DynamoDB connection on server start
+testConnection()
+  .then(() => {
+    console.log('Successfully connected to local DynamoDB');
+  })
+  .catch(err => {
+    console.error('Failed to connect to DynamoDB:', err);
+    // You might want to exit the process here depending on your requirements
+    // process.exit(1);
+  });
 
 // Get all notes
 app.get('/api/notes', async (req, res) => {
