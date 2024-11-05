@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Note App</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container mt-5">
+        <h1>Simple Note App</h1>
+
+        <!-- Add Note Form -->
+        <div class="row mb-4">
+            <div class="col">
+                <div class="input-group">
+                    <input type="text" id="newNote" class="form-control" placeholder="Enter new note">
+                    <button class="btn btn-primary" id="addNoteBtn">Add Note</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Notes List -->
+        <div class="row">
+            <div class="col">
+                <ul id="notesList" class="list-group">
+                    <!-- Notes will be populated here -->
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Load notes when page loads
+        window.onload = loadNotes;
+
+        async function loadNotes() {
+            try {
+                const response = await fetch('/api/notes');
+                const notes = await response.json();
+                const notesList = document.getElementById('notesList');
+                notesList.innerHTML = '';
+                notes.forEach(note => addNoteToList(note));
+            } catch (error) {
+                console.error('Error loading notes:', error);
+                alert('Error loading notes');
+            }
+        }
+
+        function addNoteToList(note) {
+            const notesList = document.getElementById('notesList');
+            const li = document.createElement('li');
+            li.className = 'list-group-item d-flex justify-content-between align-items-center';
+            li.id = note.id;
+
+            const content = document.createElement('span');
+            content.textContent = note.content;
+            content.style.cursor = 'pointer';
+
+            content.onclick = function () {
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.value = content.textContent;
+                input.className = 'form-control';
+
+                input.onblur = async function () {
+                    const newContent = input.value;
+                    try {
+                        const response = await fetch(`/api/notes/${note.id}`, {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ content: newContent })
+                        });
+                        if (response.ok) {
+                            content.textContent = newContent;
+                            li.replaceChild(content, input);
+                        }
+                    } catch (error) {
+                        alert('Error updating note');
+                        li.replaceChild(content, input);
+                    }
+                };
+
+                li.replaceChild(input, content);
+                input.focus();
+            };
+
+            const deleteBtn = document.createElement('button');
+            deleteBtn.className = 'btn btn-danger btn-sm';
+            deleteBtn.textContent = 'Delete';
+            deleteBtn.onclick = async () => {
+                try {
+                    const response = await fetch(`/api/notes/${note.id}`, {
+                        method: 'DELETE'
+                    });
+                    if (response.ok) {
+                        li.remove();
+                    }
+                } catch (error) {
+                    alert('Error deleting note');
+                }
+            };
+
+            li.appendChild(content);
+            li.appendChild(deleteBtn);
+            notesList.appendChild(li);
+        }
+
+        document.getElementById('addNoteBtn').onclick = async function () {
+            const input = document.getElementById('newNote');
+            const content = input.value.trim();
+
+            if (!content) return;
+
+            try {
+                const response = await fetch('/api/notes', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ content })
+                });
+
+                const note = await response.json();
+                addNoteToList(note);
+                input.value = '';
+            } catch (error) {
+                console.error('Error adding note:', error);
+                alert('Error adding note');
+            }
+        };
+    </script>
+</body>
+
+</html>
