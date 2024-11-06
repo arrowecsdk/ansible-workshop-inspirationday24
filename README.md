@@ -646,12 +646,7 @@ Change the hosts: __tag_solution_db_jesbe__ so it matches you initials
   vars:
 
   tasks:
-    - name: Check if nodesource setup is downloaded
-      ansible.builtin.stat:
-        path: ~/nodesource_setup.sh
-      become: true
-      register: nodesourcefile
-
+      
     - name: Download nodesource
       ansible.builtin.get_url:
         url: https://deb.nodesource.com/setup_20.x
@@ -659,7 +654,6 @@ Change the hosts: __tag_solution_db_jesbe__ so it matches you initials
         force: false
         mode: 0770
       become: true
-      when: not nodesourcefile.stat.exists
 
     - name: Setup nodesource repo
       ansible.builtin.shell: |
@@ -691,6 +685,60 @@ Change the hosts: __tag_solution_db_jesbe__ so it matches you initials
         path: ~/note-app/public
         state: directory
 
+    - name: Install pm2 package globally
+      community.general.npm:
+        name: pm2
+        global: true
+      become: true
+      
+    - name: Download server.js
+      ansible.builtin.get_url:
+        url: https://raw.githubusercontent.com/arrowecsdk/ansible-workshop-inspirationday24/refs/heads/main/noteapp/server.js
+        dest: ~/note-app/server.js
+        force: false
+        mode: 0664
+
+    - name: Download dynamodb-config
+      ansible.builtin.get_url:
+        url: https://raw.githubusercontent.com/arrowecsdk/ansible-workshop-inspirationday24/refs/heads/main/noteapp/dynamodb-config
+        dest: ~/note-app/dynamodb-config
+        force: false
+        mode: 0664
+
+    - name: Download createTable.js
+      ansible.builtin.get_url:
+        url: https://raw.githubusercontent.com/arrowecsdk/ansible-workshop-inspirationday24/refs/heads/main/noteapp/createTable.js
+        dest: ~/note-app/createTable.js
+        force: false
+        mode: 0664
+
+    - name: Download index.html
+      ansible.builtin.get_url:
+        url: https://raw.githubusercontent.com/arrowecsdk/ansible-workshop-inspirationday24/refs/heads/main/noteapp/public/index.html
+        dest: ~/note-app/public/index.html
+        force: false
+        mode: 0664
+
+    - name: Create new dynamodb table
+      ansible.builtin.shell: |
+        cd ~/note-app
+        nodejs createTable.js
+
+    - name: Status pm2 server
+      ansible.builtin.shell: |
+        pm2 show server
+      ignore_errors: true
+      register: pm2show
+
+    - name: Debug
+      ansible.builtin.debug:
+        msg: "{{ pm2show.stderr }}"
+
+    - name: pm2 start server
+      ansible.builtin.shell: |
+        cd ~/note-app
+        pm2 start server.js
+      when: pm2show.stderr == "[PM2][WARN] server doesn't exist"
 
 
 ```
