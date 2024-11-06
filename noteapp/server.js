@@ -1,4 +1,4 @@
-Server.js with DynamoDB Config
+// Server.js with DynamoDB Config
 
 // server.js
 const express = require('express');
