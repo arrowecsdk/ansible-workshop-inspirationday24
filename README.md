@@ -481,7 +481,7 @@ __Note:__ That we present the password in the playbook in clear text - __this is
 
 ```yaml
 ---
-- name: Create Active Directory
+- name: Install DynamoDB
   hosts: tag_solution_db_jesbe
 
   vars:
@@ -595,9 +595,115 @@ __Note:__ That we present the password in the playbook in clear text - __this is
 
 ```
 
+Run the playbook using the dynamic inventory
+
+```bash
+
+ansible-playbook -i servers.azure_rm.yml db.yml
+
+```
+
 ## Lab 4 - Deploy Website to linux Server
 
 Install NodeJS and Website
+
+In VSCode create a new file __package.json__
+
+Add content below and save the file
+
+```json
+{
+    "name": "note-app",
+    "version": "1.0.0",
+    "main": "index.js",
+    "scripts": {
+      "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "description": "",
+    "dependencies": {
+      "aws-sdk": "^2.1691.0",
+      "body-parser": "^1.20.3",
+      "express": "^4.21.1"
+    }
+  }
+
+```
+
+In VSCode create a new file __web.yml__
+
+Add the playbook below
+
+Change the hosts: __tag_solution_db_jesbe__ so it matches you initials
+
+```yaml
+---
+- name: Install NodeJS and website
+  hosts: tag_solution_web_jesbe
+
+  vars:
+
+  tasks:
+    - name: Check if nodesource setup is downloaded
+      ansible.builtin.stat:
+        path: ~/nodesource_setup.sh
+      become: true
+      register: nodesourcefile
+
+    - name: Download nodesource
+      ansible.builtin.get_url:
+        url: https://deb.nodesource.com/setup_20.x
+        dest: ~/nodesource_setup.sh
+        force: false
+        mode: 0770
+      become: true
+      when: not nodesourcefile.stat.exists
+
+    - name: Setup nodesource repo
+      ansible.builtin.shell: |
+        ~/nodesource_setup.sh
+      become: true
+
+    - name: Install nodejs 20
+      ansible.builtin.package:
+        name: nodejs
+        state: present
+      become: true
+
+    - name: Create note-app dir
+      ansible.builtin.file:
+        path: ~/note-app
+        state: directory
+
+    - name: Copy package.json
+      ansible.builtin.copy:
+        src: package.json
+        dest: ~/note-app/package.json
+
+    - name: Install npm packages
+      community.general.npm:
+        path: ~/note-app/
+
+    - name: Create note-app / public dir
+      ansible.builtin.file:
+        path: ~/note-app/public
+        state: directory
+
+
+
+```
+
+Run the playbook using the dynamic inventory
+
+Type __yes__ to the fingerprint
+
+```bash
+
+ansible-playbook -i servers.azure_rm.yml web.yml
+
+```
 
 ```bash
 
