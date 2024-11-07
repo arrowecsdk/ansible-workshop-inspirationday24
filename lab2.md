@@ -12,15 +12,21 @@ mkdir automation
 
 In VSCode click the blue __Open Folder__
 
+If its hidden, Click the __Files__ icon in the left menu
+
+Select __automation__ and click __ok__
+
+Select __Linux__
+
 If it asks for password enter the password
 
-Click the blue __Trust__ button
+Click the blue __Yes, I Trust the authors__ button
 
 Creata a new file __azure.yml__
 
 Add the first part below to the file
 
-make sure you change the line user: __write your username here__ to your initials
+make sure you change the line user: __write your username here__ to your initials / username
 
 ```yaml
 ---
@@ -40,6 +46,8 @@ make sure you change the line user: __write your username here__ to your initial
 Add the next part of the playbook
 
 Make sure you have all the __spaces__ in the first line
+
+The __-__ in  __- name:__ should be under the __s__ in the line __tasks:__ above
 
 ```yaml
     - name: Create a public ip address for db
@@ -83,10 +91,6 @@ Make sure you have all the __spaces__ in the first line
 
 Save the playbook
 
-Run the playbook with __ansible-playbook azure.yml__
-
-If the __Terminal__ is closed in VSCode
-
 Click __Terminal__ in the menu, select __New Terminal__
 
 Start the python virtual environment
@@ -96,6 +100,8 @@ Start the python virtual environment
 source ../ansible/bin/activate
 
 ```
+
+Run the playbook with __ansible-playbook azure.yml__
 
 In the __Terminal__
 
@@ -230,3 +236,7 @@ Now lets add the Linux server __web__ to the same playbook
       shell: "ssh-keyscan -t ecdsa {{ web_pub_ip.state.ip_address }}  >> /home/{{ user }}/.ssh/known_hosts"
 
 ```
+
+One of the last tasks in the playbook reveals the web servers public IP, copy the ip address and save it for later
+
+Go To next lab

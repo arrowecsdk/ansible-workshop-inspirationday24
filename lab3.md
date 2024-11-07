@@ -79,7 +79,9 @@ In VSCode create a new file __db.yml__
 
 Add the playbook below
 
-Change the hosts: __tag_solution_db_jesbe__ so it matches you initials
+Change the hosts: __tag_solution_db_jesbe__ so it matches you initials /username
+
+Change the __ansible_user:__ so it matches you initials /username
 
 __Note:__ That we present the password in the playbook in clear text - __this is NOT recommended__ - There are other ways to manage passwords and secrets in Ansible
 

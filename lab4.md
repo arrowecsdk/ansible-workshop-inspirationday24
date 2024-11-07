@@ -216,3 +216,11 @@ Type __yes__ to the fingerprint
 ansible-playbook -i servers.azure_rm.yml web.yml
 
 ```
+
+Wait for the playbook to finish
+
+Open a new tab in the browser and paste the web servers ip address in.
+
+Test the web application
+
+[Image](images/final.png)
