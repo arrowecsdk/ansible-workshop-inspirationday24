@@ -8,6 +8,8 @@ The linux server will run out node.js website
 
 The windows server will run the local dynamoDB
 
+To see the manual steps to install DynamoDB and the Web application [Click Here](manual.md)
+
 ## Lab Invironment
 
 __Student__ Windows 11 Workstation
@@ -37,3 +39,5 @@ Lab 3
 Lab 4
 
 - Install NodeJS and Website
+
+[Go to Lab 1](lab1.md)

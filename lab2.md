@@ -239,4 +239,4 @@ Now lets add the Linux server __web__ to the same playbook
 
 One of the last tasks in the playbook reveals the web servers public IP, copy the ip address and save it for later
 
-Go To next lab
+[Go to Lab 3](lab3.md)

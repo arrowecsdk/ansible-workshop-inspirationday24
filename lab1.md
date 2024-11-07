@@ -144,3 +144,5 @@ ssh-keygen
 Hit "Enter" for defaults
 
 ```
+
+[Go to Lab 2](lab2.md)

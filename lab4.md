@@ -223,4 +223,4 @@ Open a new tab in the browser and paste the web servers ip address in.
 
 Test the web application
 
-[Image](images/final.png)
+![Web App](images/final.png)

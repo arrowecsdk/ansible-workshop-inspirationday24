@@ -208,3 +208,5 @@ Run the playbook using the dynamic inventory
 ansible-playbook -i servers.azure_rm.yml db.yml
 
 ```
+
+[Go to Lab 4](lab4.md)
